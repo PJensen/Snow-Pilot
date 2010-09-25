@@ -23,6 +23,9 @@ public class Screen extends View {
 		while (iSnow.hasNext()) {
 			iSnow.next().draw(canvas);
 		}
+		
+		try { MainThread.mTerrtain.draw(canvas); } 
+		catch(Exception ex) { }
 
 		
 		invalidate();

@@ -13,10 +13,11 @@ public class Terrain extends Drawable {
 	 * @param aWidth - The width the terrain should go to.
 	 * @param aStartingHeight - The height the terrain starts at.
 	 */
-	public Terrain(int aStartingHeight, int aWidth) {
+	public Terrain(int aStartingHeight, int aWidth, int aMaxHeight) {
 		_startingHeight = aStartingHeight;
 		_terrainWidth = aWidth;
 		_surface = new int[aWidth];
+		_maxHeight = aMaxHeight;
 	}
 	
 	/**
@@ -24,34 +25,33 @@ public class Terrain extends Drawable {
 	 * Should really only be called once; unless of course the screen is resized.
 	 */
 	public void generate(TerrainStyle aTerrainStyle) {
+		isGenerated = true;
 		int tmpRandomWalk = 0;
 		switch (aTerrainStyle) {
 		
 		case FLAT_TERRAIN:
 			for (int index = 0; index < _terrainWidth; ++index) {
-				_surface[index] = _startingHeight;
+				_surface[index] = _startingHeight + 100;
 			} return;
 		case RANDOM_TERRAIN:
 			for (int index = 0; index < _terrainWidth; ++index) {
-				tmpRandomWalk += SnowPilot.mRandom.nextInt(1);
-				tmpRandomWalk -= SnowPilot.mRandom.nextInt(1);
-				_surface[index] = tmpRandomWalk;
+				tmpRandomWalk += SnowPilot.mRandom.nextInt(2);
+				tmpRandomWalk -= SnowPilot.mRandom.nextInt(2);
+				_surface[index] = tmpRandomWalk + 100;
 			} return;
 		case JAGGED_TERRAIN:
-			boolean upDown = true; 		// true is up, false is down.
-			int tmpPeakReset = SnowPilot.mRandom.nextInt(MAX_PEAK_RESET);
+			boolean upDown = true;
+			int tmpPeakReset = SnowPilot.mRandom.nextInt(MAX_PEAK_RESET) + 1;
 			for (int index = 0; index < _terrainWidth; ++index) {
 				if (index % tmpPeakReset == 0) {
-					tmpPeakReset = 0;	// Start a new peak or valley.
+					tmpPeakReset = SnowPilot.mRandom.nextInt(MAX_PEAK_RESET) + 1;
 					upDown = !upDown;
-				}
-				else {
+				} else {
 					if (upDown)
 						tmpRandomWalk += 1;
-					else
-						tmpRandomWalk -= 1;
-					_surface[index] = tmpRandomWalk;
+					else tmpRandomWalk -= 1;
 				}
+				_surface[index] = tmpRandomWalk;
 			} return;
 		}
 	}
@@ -63,6 +63,8 @@ public class Terrain extends Drawable {
 		
 	}
 	
+	public boolean isGenerated = false;
+	
 	/**
 	 * Draw the terrain
 	 */
@@ -70,14 +72,19 @@ public class Terrain extends Drawable {
 	public void draw(Canvas canvas) {
 		Paint tmpPaint = new Paint();
 		tmpPaint.setColor(Color.WHITE);
-		for (int index = 0; index < _terrainWidth; ++index)
-			canvas.drawPoint(index, 40, tmpPaint);		
+		for (int index = 0; index < _terrainWidth; ++index) {
+			// canvas.drawPoint(index, _startingHeight + _surface[index], tmpPaint);
+			canvas.drawLine(index, _startingHeight - _surface[index], index, _maxHeight, tmpPaint);
+		}
 	}
 	
 	/**
 	 * The  starting height for the terrain
 	 */
 	private final int _startingHeight;
+	
+	
+	private final int _maxHeight;
 	
 	/**
 	 * The width of the terrain

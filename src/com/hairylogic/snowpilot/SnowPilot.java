@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.MotionEvent;
 
 public class SnowPilot extends Activity {
@@ -30,6 +31,7 @@ public class SnowPilot extends Activity {
         SnowFlake.setPaint(tmpSnowFlakePaint);
 
         setContentView(mScreen = new Screen(this));
+        mRandom.setSeed(new Time().toMillis(true));
                 
         // Fire the main thread.
         if (!mThread.isAlive())

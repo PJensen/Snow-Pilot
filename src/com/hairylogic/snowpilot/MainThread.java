@@ -16,17 +16,25 @@ public final class MainThread implements Runnable {
 	private final int SNOW_THRESHOLD = 10;
 	private static final long THREAD_DELAY = 10L;
 	
+	static Terrain mTerrtain = null;
+	
 	/**
 	 * Implements Runnable
 	 */
 	public synchronized void run() {
-		
 		
 		// This thread should be considered always running unless
 		// stopped; 
 		while (true) {
 			while (SnowPilot.mScreen == null)
 				;
+			
+			if (mTerrtain == null)
+				mTerrtain = new Terrain(400, SnowPilot.mScreen.getWidth(), SnowPilot.mScreen.getHeight());
+			else if (!mTerrtain.isGenerated) {
+				mTerrtain = new Terrain(SnowPilot.mScreen.getWidth() + SnowPilot.mScreen.getWidth()/4, SnowPilot.mScreen.getWidth(), SnowPilot.mScreen.getHeight());
+				mTerrtain.generate(TerrainStyle.JAGGED_TERRAIN);
+			}
 			
 			// If a random number between one and one-hundres is less than
 			// the snow threshold make snow this time around.
@@ -42,6 +50,13 @@ public final class MainThread implements Runnable {
 				tmpFlake.doMove();
 				if (tmpFlake.y > SnowPilot.mScreen.getHeight())
 					tmpFlake.invalidate();
+			}
+			
+			iSnow = SnowPilot.mSnow.iterator();
+			while (iSnow.hasNext())	{
+				SnowFlake tmpFlake = iSnow.next();
+				if (tmpFlake.invalidated)
+					SnowPilot.mSnow.remove(tmpFlake);
 			}
 
 			try { Thread.sleep(THREAD_DELAY); } 
