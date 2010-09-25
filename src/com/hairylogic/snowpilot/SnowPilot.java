@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.os.Bundle;
@@ -50,9 +51,29 @@ public class SnowPilot extends Activity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	
+    	if (event.getRawX() > mScreen.getWidth())
+    		return false;
+    	else if (event.getRawX() < 0)
+    		return false;
+    	
+    	// TODO: For efficiency save x and y early on.
+    	Point tmpHistorical = new Point();
+    	
     	// Make a quick determination if the touch is above the surface; we 
     	// just pass the whole event.
     	if (!SnowPilot.mTerrain.chkTouchPastSurface(event)) {
+    		
+    		if (mThrowing) {
+    			// Record the newest x and y; and hopefully use
+    			// last point to generate a throw vector. 
+    			Point tmpNewPoint = new Point();
+    			tmpNewPoint.x = (int) event.getRawX();
+    			tmpNewPoint.y = (int) event.getRawY();
+    			
+    			throwSlope = getSlope(tmpNewPoint, tmpHistorical);
+    			mThrowing = false;
+    		}
+    		
     		// Save the current pressure
     		int tmpPressure = (int)(event.getPressure() * 50);
 
@@ -73,6 +94,11 @@ public class SnowPilot extends Activity {
     		tmpPressure -= mRandom.nextInt(tmpPressure);
     		mSnow.add(new SnowFlake((int)event.getRawX(), 
     				(int)event.getRawY(), tmpPressure));
+    	} else {
+    		SnowPilot.mTerrain.dropSurface(event);
+    		tmpHistorical.x = (int)event.getRawX();
+    		tmpHistorical.y = (int)event.getRawY();
+    		mThrowing = true;
     	}
     	
     	// The motion even call chain stops here.
@@ -93,6 +119,21 @@ public class SnowPilot extends Activity {
     }
     
     /**
+     * Return the slope between two points.
+     * @param a - The first point
+     * @param b - The second point
+     * @return - The slope between two points as a float.
+     */
+    public static float getSlope(Point a, Point b) {
+    	return (b.y - a.y) / (b.x - a.x); 
+    }
+    
+    /**
+     * Set to true if the player is about to throw something.
+     */
+    public static boolean mThrowing = false;
+    
+    /**
      * The terrain onto which the snow falls and accumulates.
      */
     public static Terrain mTerrain;
@@ -101,6 +142,8 @@ public class SnowPilot extends Activity {
      * The screen that *everything* is drawn on.
      */
     public static Screen mScreen;
+    
+    public static float throwSlope = 0.0f;
     
     /**
      * The main-game thread; does all game logic etc.

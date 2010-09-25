@@ -100,8 +100,20 @@ public class Terrain extends Drawable {
 	 * @return True if the flake has gone is at or gone past the surface.
 	 */
 	public boolean chkImpact(SnowFlake aFlake) {
+		if (aFlake.x > _terrainWidth) return false;
 		try { return (aFlake.y > _startingHeight + _surface[aFlake.x]); }
 		catch(Exception ex) { return false; } 
+	}
+	
+	/**
+	 * 
+	 * @param event
+	 */
+	public void dropSurface(MotionEvent event) {
+		if (event.getRawX() < _terrainWidth)
+		if (_surface[(int)event.getRawX()] + 10 < _screenHeight) {
+			_surface[(int)event.getRawX()] += 10; 
+		}
 	}
 	
 	
