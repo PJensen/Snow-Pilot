@@ -28,7 +28,7 @@ public final class MainThread implements Runnable {
 			
 			if (!Terrain.isGenerated) {
 				if (SnowPilot.mScreen.getWidth() > 0) {
-					SnowPilot.mTerrain = new Terrain((SnowPilot.mScreen.getHeight()/4), 
+					SnowPilot.mTerrain = new Terrain((SnowPilot.mScreen.getHeight()/2), 
 							SnowPilot.mScreen);
 					TerrainStyle tmpNewStyle = null;
 					switch(SnowPilot.mRandom.nextInt(3) + 1) {
@@ -42,13 +42,15 @@ public final class MainThread implements Runnable {
 						tmpNewStyle = TerrainStyle.RANDOM_TERRAIN;
 						break;
 					case 4:
-						tmpNewStyle = TerrainStyle.FLAT_TERRAIN;
+						tmpNewStyle = TerrainStyle.JAGGED_TERRAIN;
 						break;
 					}
 					SnowPilot.mTerrain.generate(tmpNewStyle);
 					Terrain.isGenerated = true;
 				}
-			}
+			} else { SnowPilot.mTerrain.smoothTerrain(); } 
+			
+			
 			
 			/*
 			if (mTerrtain == null)
@@ -73,7 +75,6 @@ public final class MainThread implements Runnable {
 				
 				if (SnowPilot.mTerrain.chkImpact(tmpFlake)) {
 					SnowPilot.mTerrain.snowImpact(tmpFlake);
-				// if (tmpFlake.y > SnowPilot.mScreen.getHeight())
 					tmpFlake.invalidate();
 				}
 			}

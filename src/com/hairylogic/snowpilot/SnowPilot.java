@@ -4,8 +4,6 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.hairylogic.snowpilot.Terrain.TerrainStyle;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -52,26 +50,30 @@ public class SnowPilot extends Activity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	
-    	// Save the current pressure
-    	int tmpPressure = (int)(event.getPressure() * 50);
-    	
-    	// Based upon pressure, generate another flake.
-    	tmpPressure += mRandom.nextInt(tmpPressure);
-    	tmpPressure -= mRandom.nextInt(tmpPressure);
-    	mSnow.add(new SnowFlake((int)event.getRawX(), 
-    			(int)event.getRawY(), tmpPressure));
-    	
-    	// Based upon pressure, generate another flake.
-    	tmpPressure += mRandom.nextInt(tmpPressure);
-    	tmpPressure -= mRandom.nextInt(tmpPressure);
-    	mSnow.add(new SnowFlake((int)event.getRawX(), 
-    			(int)event.getRawY(), tmpPressure));
-    	
-    	// Based upon pressure, generate another flake.
-    	tmpPressure += mRandom.nextInt(tmpPressure);
-    	tmpPressure -= mRandom.nextInt(tmpPressure);
-    	mSnow.add(new SnowFlake((int)event.getRawX(), 
-    			(int)event.getRawY(), tmpPressure));
+    	// Make a quick determination if the touch is above the surface; we 
+    	// just pass the whole event.
+    	if (!SnowPilot.mTerrain.chkTouchPastSurface(event)) {
+    		// Save the current pressure
+    		int tmpPressure = (int)(event.getPressure() * 50);
+
+    		// Based upon pressure, generate another flake.
+    		tmpPressure += mRandom.nextInt(tmpPressure);
+    		tmpPressure -= mRandom.nextInt(tmpPressure);
+    		mSnow.add(new SnowFlake((int)event.getRawX(), 
+    				(int)event.getRawY(), tmpPressure));
+
+    		// Based upon pressure, generate another flake.
+    		tmpPressure += mRandom.nextInt(tmpPressure);
+    		tmpPressure -= mRandom.nextInt(tmpPressure);
+    		mSnow.add(new SnowFlake((int)event.getRawX(), 
+    				(int)event.getRawY(), tmpPressure));
+
+    		// Based upon pressure, generate another flake.
+    		tmpPressure += mRandom.nextInt(tmpPressure);
+    		tmpPressure -= mRandom.nextInt(tmpPressure);
+    		mSnow.add(new SnowFlake((int)event.getRawX(), 
+    				(int)event.getRawY(), tmpPressure));
+    	}
     	
     	// The motion even call chain stops here.
     	return false;  // super.onTouchEvent(event); 

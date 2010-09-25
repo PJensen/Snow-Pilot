@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 
 /**
  * Terrain
@@ -77,6 +78,23 @@ public class Terrain extends Drawable {
 	}
 	
 	/**
+	 * Given an 2-tuple, (x, y) a coordinate determine if it's 
+	 * beyond the extent of the top of the surface.
+	 * @param aX - The x-coordinate.
+	 * @param aY - The y-coordinate.
+	 * @return True is the coordinate is beyond the surface.
+	 * <b>Precondition</b>: aX does not exceed getWidth()
+	 */
+	/* public boolean chkTouchPastSurface(MotionEvent event) {
+		return (event.getRawY() > _surface[(int)event.getRawX()]); 
+	}*/
+	
+	public boolean chkTouchPastSurface(MotionEvent event) {
+		return ((int)event.getRawY() > 
+			_surface[(int)event.getRawX()] + _startingHeight);
+	}
+	
+	/**
 	 * Determine if a particular snow flake impacted the surface.
 	 * @param aFlake - The flake to check.
 	 * @return True if the flake has gone is at or gone past the surface.
@@ -113,6 +131,16 @@ public class Terrain extends Drawable {
 	 */
 	public void smoothTerrain() {
 		
+		int dX;
+		for (int index = 1; index < _terrainWidth; ++index) {	
+			dX = _surface[index - 1] - _surface[index];
+			if (Math.abs(dX) > 1) {
+				if (dX < 0)
+					_surface[index - 1] += 1;
+				else 
+					_surface[index - 1] -= 1;
+			}
+		}
 	}
 	
 	/**
@@ -128,7 +156,11 @@ public class Terrain extends Drawable {
 	@Override
 	public void draw(Canvas canvas) {
 		for (int index = 0; index < _terrainWidth; ++index) {
-			canvas.drawCircle(index, _startingHeight + _surface[index], _radSurface[index], _terrainPaint);
+			// _terrainPaint.setColor(Color.WHITE);
+			// canvas.drawCircle(index, _startingHeight + _surface[index], _radSurface[index], _terrainPaint);
+						
+			_terrainPaint.setStrokeCap(Cap.ROUND);
+			// _terrainPaint.setStrokeWidth(_radSurface[index]);
 			canvas.drawLine(index, _startingHeight + _surface[index], index, _screenHeight, _terrainPaint);
 		}
 	}
