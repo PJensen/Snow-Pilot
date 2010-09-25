@@ -6,7 +6,7 @@ import android.view.MotionEvent;
  * A humans interaction
  * @author dasm80x86
  */
-public final class Interaction {
+public class Interaction {
 	
 	/**
 	 * Given a motion event set the last known values for
@@ -37,5 +37,5 @@ public final class Interaction {
 	/**
 	 * Scalar value multiplied to pressure.
 	 */
-	public static final int PRESSURE_SCALAR = 20;
+	public static final int PRESSURE_SCALAR = 4;
 }

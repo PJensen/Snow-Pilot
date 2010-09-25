@@ -1,7 +1,9 @@
 package com.hairylogic.snowpilot;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class Terrain extends Drawable {
@@ -66,7 +68,10 @@ public class Terrain extends Drawable {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		
+		Paint tmpPaint = new Paint();
+		tmpPaint.setColor(Color.WHITE);
+		for (int index = 0; index < _terrainWidth; ++index)
+			canvas.drawPoint(index, 40, tmpPaint);		
 	}
 	
 	/**

@@ -28,7 +28,11 @@ public class SnowFlake extends Drawable {
 	 * Move the snow flake to T+1 location.
 	 */
 	public void doMove() {
-		
+
+		x += SnowPilot.mRandom.nextInt(2);
+		x -= SnowPilot.mRandom.nextInt(2);
+		y += SnowPilot.mRandom.nextInt(2);
+		y+=1;
 	}
 	
 	/**
@@ -36,6 +40,8 @@ public class SnowFlake extends Drawable {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
+		if (invalidated)
+			return;
 		mPaint.setStrokeWidth(s);
 		canvas.drawPoint(x, y, mPaint);
 	}
@@ -76,6 +82,12 @@ public class SnowFlake extends Drawable {
 	 * The relative size of this snow flake
 	 */
 	protected int s;
+	
+	public void invalidate() {
+		invalidated = true;
+	}
+	
+	protected boolean invalidated = false;
 	
 	/**
 	 * Set the paint style for *all* snow-flakes in a static manner. Most values

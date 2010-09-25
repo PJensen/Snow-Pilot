@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.hairylogic.snowpilot.Terrain.TerrainStyle;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
@@ -23,15 +24,13 @@ public class SnowPilot extends Activity {
         super.onCreate(savedInstanceState);
         Paint tmpSnowFlakePaint = new Paint();
         tmpSnowFlakePaint.setStrokeCap(Cap.ROUND);
+        tmpSnowFlakePaint.setColor(Color.WHITE);
         tmpSnowFlakePaint.setStyle(Style.FILL);
         tmpSnowFlakePaint.setAntiAlias(true);
         SnowFlake.setPaint(tmpSnowFlakePaint);
-        
+
         setContentView(mScreen = new Screen(this));
-        
-        mTerrain = new Terrain(50, mScreen.getWidth());
-        mTerrain.generate(TerrainStyle.FLAT_TERRAIN);
-        
+                
         // Fire the main thread.
         if (!mThread.isAlive())
         	mThread.start();
@@ -42,10 +41,23 @@ public class SnowPilot extends Activity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	Interaction.setLast(event);
-    	return false;
-    	// return super.onTouchEvent(event);
+    	int tmpPressure = (int)(event.getPressure() * 50);
+    	tmpPressure += mRandom.nextInt(tmpPressure);
+    	tmpPressure -= mRandom.nextInt(tmpPressure);
+    	mSnow.add(new SnowFlake((int)event.getRawX(), 
+    			(int)event.getRawY(), tmpPressure));
+    	tmpPressure += mRandom.nextInt(tmpPressure);
+    	tmpPressure -= mRandom.nextInt(tmpPressure);
+    	mSnow.add(new SnowFlake((int)event.getRawX(), 
+    			(int)event.getRawY(), tmpPressure));
+    	tmpPressure += mRandom.nextInt(tmpPressure);
+    	tmpPressure -= mRandom.nextInt(tmpPressure);
+    	mSnow.add(new SnowFlake((int)event.getRawX(), 
+    			(int)event.getRawY(), tmpPressure));
+    	
+    	return false; // super.onTouchEvent(event);
     }
+    
     
     /**
      * The main-game thread; does all game logic etc.
@@ -61,8 +73,6 @@ public class SnowPilot extends Activity {
      * Not a fan of creating a new Random() object every time we need one.
      */
     public static Random mRandom = new Random();
-    
-    public static Terrain mTerrain;
     
     /**
      * Snow flake blocking queue
