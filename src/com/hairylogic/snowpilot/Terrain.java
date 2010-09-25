@@ -74,8 +74,12 @@ public class Terrain extends Drawable {
 		tmpPaint.setColor(Color.WHITE);
 		for (int index = 0; index < _terrainWidth; ++index) {
 			// canvas.drawPoint(index, _startingHeight + _surface[index], tmpPaint);
-			canvas.drawLine(index, _startingHeight - _surface[index], index, _maxHeight, tmpPaint);
+			canvas.drawLine(index, _startingHeight + _surface[index], index, _maxHeight, tmpPaint);
 		}
+	}
+	
+	public int fX(int index) {
+		return _surface[index];
 	}
 	
 	/**

@@ -15,7 +15,7 @@ public class Screen extends View {
 	public Screen(Context context) {
 		super(context);
 	}
-	
+
 	@Override
 	public void draw(Canvas canvas) {
 		
@@ -24,9 +24,12 @@ public class Screen extends View {
 			iSnow.next().draw(canvas);
 		}
 		
+		Paint tmpPaint = new Paint();
+		tmpPaint.setColor(Color.WHITE);
+		canvas.drawText(Integer.toString(SnowPilot.mSnow.size()), 50, 50, tmpPaint);
+		
 		try { MainThread.mTerrtain.draw(canvas); } 
 		catch(Exception ex) { }
-
 		
 		invalidate();
 		

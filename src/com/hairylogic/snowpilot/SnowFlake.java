@@ -32,7 +32,8 @@ public class SnowFlake extends Drawable {
 		x += SnowPilot.mRandom.nextInt(2);
 		x -= SnowPilot.mRandom.nextInt(2);
 		y += SnowPilot.mRandom.nextInt(2);
-		y+=1;
+		y+=(s/2);
+		//y+=1;
 	}
 	
 	/**

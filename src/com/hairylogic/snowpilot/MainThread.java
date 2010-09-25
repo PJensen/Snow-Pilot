@@ -40,7 +40,7 @@ public final class MainThread implements Runnable {
 			// the snow threshold make snow this time around.
 			 if (SnowPilot.mRandom.nextInt(ONE_HUNDRED) < SNOW_THRESHOLD) {
 				 int tmpRandomX = SnowPilot.mRandom.nextInt(SnowPilot.mScreen.getWidth());
-				 int tmpRandomS = SnowPilot.mRandom.nextInt(5);
+				 int tmpRandomS = SnowPilot.mRandom.nextInt(10);
 				 SnowPilot.mSnow.add(new SnowFlake(tmpRandomX, 1, tmpRandomS));	
 			}
 			

@@ -14,6 +14,7 @@ import android.graphics.Paint.Style;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 public class SnowPilot extends Activity {
 	
@@ -32,6 +33,9 @@ public class SnowPilot extends Activity {
 
         setContentView(mScreen = new Screen(this));
         mRandom.setSeed(new Time().toMillis(true));
+        
+        Toast.makeText(this, Integer.toString(mScreen.getWidth()), -1).show();
+        
                 
         // Fire the main thread.
         if (!mThread.isAlive())
