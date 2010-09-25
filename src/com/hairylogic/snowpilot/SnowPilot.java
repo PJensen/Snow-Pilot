@@ -24,19 +24,23 @@ public class SnowPilot extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Paint tmpSnowFlakePaint = new Paint();
-        tmpSnowFlakePaint.setStrokeCap(Cap.ROUND);
-        tmpSnowFlakePaint.setColor(Color.WHITE);
-        tmpSnowFlakePaint.setStyle(Style.FILL);
-        tmpSnowFlakePaint.setAntiAlias(true);
-        SnowFlake.setPaint(tmpSnowFlakePaint);
-
+        
+        // Generate what ends up being the only copy of paint; 
+        // additionally call setPaint for *all* snow-flakes.
+        Paint tmpSnowPaint = new Paint();
+        tmpSnowPaint.setStrokeCap(Cap.ROUND);
+        tmpSnowPaint.setColor(Color.WHITE);
+        tmpSnowPaint.setStyle(Style.FILL);
+        tmpSnowPaint.setAntiAlias(true);
+        SnowFlake.setPaint(tmpSnowPaint);
+        
+        // Create the the screen; attached to content view.
         setContentView(mScreen = new Screen(this));
+        
+        // Set the random seed based upon the number of milliseconds
+        // since UNIX epoch.
         mRandom.setSeed(new Time().toMillis(true));
-        
-        Toast.makeText(this, Integer.toString(mScreen.getWidth()), -1).show();
-        
-                
+                        
         // Fire the main thread.
         if (!mThread.isAlive())
         	mThread.start();
@@ -47,33 +51,59 @@ public class SnowPilot extends Activity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+    	
+    	// Save the current pressure
     	int tmpPressure = (int)(event.getPressure() * 50);
-    	tmpPressure += mRandom.nextInt(tmpPressure);
-    	tmpPressure -= mRandom.nextInt(tmpPressure);
-    	mSnow.add(new SnowFlake((int)event.getRawX(), 
-    			(int)event.getRawY(), tmpPressure));
-    	tmpPressure += mRandom.nextInt(tmpPressure);
-    	tmpPressure -= mRandom.nextInt(tmpPressure);
-    	mSnow.add(new SnowFlake((int)event.getRawX(), 
-    			(int)event.getRawY(), tmpPressure));
+    	
+    	// Based upon pressure, generate another flake.
     	tmpPressure += mRandom.nextInt(tmpPressure);
     	tmpPressure -= mRandom.nextInt(tmpPressure);
     	mSnow.add(new SnowFlake((int)event.getRawX(), 
     			(int)event.getRawY(), tmpPressure));
     	
-    	return false; // super.onTouchEvent(event);
+    	// Based upon pressure, generate another flake.
+    	tmpPressure += mRandom.nextInt(tmpPressure);
+    	tmpPressure -= mRandom.nextInt(tmpPressure);
+    	mSnow.add(new SnowFlake((int)event.getRawX(), 
+    			(int)event.getRawY(), tmpPressure));
+    	
+    	// Based upon pressure, generate another flake.
+    	tmpPressure += mRandom.nextInt(tmpPressure);
+    	tmpPressure -= mRandom.nextInt(tmpPressure);
+    	mSnow.add(new SnowFlake((int)event.getRawX(), 
+    			(int)event.getRawY(), tmpPressure));
+    	
+    	// The motion even call chain stops here.
+    	return false;  // super.onTouchEvent(event); 
     }
     
+    /**
+     * When the back button is pressed a variety of things need to happen.
+     * In my case I use the back button to exit applications; this method
+     * allows the subsequent regeneration of the terrain by setting it's 
+     * static boolean to false.
+     */
+    @Override
+    public void onBackPressed() {
+    	// 
+    	Terrain.isGenerated = false;
+    	super.onBackPressed();
+    }
     
     /**
-     * The main-game thread; does all game logic etc.
+     * The terrain onto which the snow falls and accumulates.
      */
-    public static Thread mThread = new Thread(new MainThread());
+    public static Terrain mTerrain;
     
     /**
      * The screen that *everything* is drawn on.
      */
     public static Screen mScreen;
+    
+    /**
+     * The main-game thread; does all game logic etc.
+     */
+    public static Thread mThread = new Thread(new MainThread());
     
     /**
      * Not a fan of creating a new Random() object every time we need one.
@@ -84,4 +114,10 @@ public class SnowPilot extends Activity {
      * Snow flake blocking queue
      */
     public static BlockingQueue<SnowFlake> mSnow = new LinkedBlockingQueue<SnowFlake>();
+    
+    /**
+     * Determines if debugging is enabled or not.
+     */
+    public static boolean IsDebug = true;
+    
 }

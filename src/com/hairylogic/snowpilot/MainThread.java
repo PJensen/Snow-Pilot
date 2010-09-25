@@ -15,9 +15,6 @@ public final class MainThread implements Runnable {
 	private final int ONE_HUNDRED = 100;
 	private final int SNOW_THRESHOLD = 10;
 	private static final long THREAD_DELAY = 10L;
-	
-	static Terrain mTerrtain = null;
-	
 	/**
 	 * Implements Runnable
 	 */
@@ -29,14 +26,39 @@ public final class MainThread implements Runnable {
 			while (SnowPilot.mScreen == null)
 				;
 			
+			if (!Terrain.isGenerated) {
+				if (SnowPilot.mScreen.getWidth() > 0) {
+					SnowPilot.mTerrain = new Terrain((SnowPilot.mScreen.getHeight()/4), 
+							SnowPilot.mScreen);
+					TerrainStyle tmpNewStyle = null;
+					switch(SnowPilot.mRandom.nextInt(3) + 1) {
+					case 1:
+						tmpNewStyle = TerrainStyle.FLAT_TERRAIN;
+						break;
+					case 2:
+						tmpNewStyle = TerrainStyle.JAGGED_TERRAIN;
+						break;
+					case 3:
+						tmpNewStyle = TerrainStyle.RANDOM_TERRAIN;
+						break;
+					case 4:
+						tmpNewStyle = TerrainStyle.FLAT_TERRAIN;
+						break;
+					}
+					SnowPilot.mTerrain.generate(tmpNewStyle);
+					Terrain.isGenerated = true;
+				}
+			}
+			
+			/*
 			if (mTerrtain == null)
 				mTerrtain = new Terrain(400, SnowPilot.mScreen.getWidth(), SnowPilot.mScreen.getHeight());
 			else if (!mTerrtain.isGenerated) {
 				mTerrtain = new Terrain(SnowPilot.mScreen.getWidth() + SnowPilot.mScreen.getWidth()/4, SnowPilot.mScreen.getWidth(), SnowPilot.mScreen.getHeight());
 				mTerrtain.generate(TerrainStyle.JAGGED_TERRAIN);
-			}
+			}*/
 			
-			// If a random number between one and one-hundres is less than
+			// If a random number between one and one-hundred is less than
 			// the snow threshold make snow this time around.
 			 if (SnowPilot.mRandom.nextInt(ONE_HUNDRED) < SNOW_THRESHOLD) {
 				 int tmpRandomX = SnowPilot.mRandom.nextInt(SnowPilot.mScreen.getWidth());
@@ -48,8 +70,12 @@ public final class MainThread implements Runnable {
 			while (iSnow.hasNext()) {
 				SnowFlake tmpFlake = iSnow.next();
 				tmpFlake.doMove();
-				if (tmpFlake.y > SnowPilot.mScreen.getHeight())
+				
+				if (SnowPilot.mTerrain.chkImpact(tmpFlake)) {
+					SnowPilot.mTerrain.snowImpact(tmpFlake);
+				// if (tmpFlake.y > SnowPilot.mScreen.getHeight())
 					tmpFlake.invalidate();
+				}
 			}
 			
 			iSnow = SnowPilot.mSnow.iterator();

@@ -33,7 +33,6 @@ public class SnowFlake extends Drawable {
 		x -= SnowPilot.mRandom.nextInt(2);
 		y += SnowPilot.mRandom.nextInt(2);
 		y+=(s/2);
-		//y+=1;
 	}
 	
 	/**
@@ -88,6 +87,10 @@ public class SnowFlake extends Drawable {
 		invalidated = true;
 	}
 	
+	/**
+	 * Settings invalidated to true flags this SnowFlake for
+	 * thread safe removal.
+	 */
 	protected boolean invalidated = false;
 	
 	/**

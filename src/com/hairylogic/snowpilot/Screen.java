@@ -24,12 +24,17 @@ public class Screen extends View {
 			iSnow.next().draw(canvas);
 		}
 		
-		Paint tmpPaint = new Paint();
-		tmpPaint.setColor(Color.WHITE);
-		canvas.drawText(Integer.toString(SnowPilot.mSnow.size()), 50, 50, tmpPaint);
+		try { SnowPilot.mTerrain.draw(canvas); }
+		catch (Exception ex) { }
 		
-		try { MainThread.mTerrtain.draw(canvas); } 
-		catch(Exception ex) { }
+		if (SnowPilot.IsDebug) {
+			Paint tmpPaint = new Paint();
+			tmpPaint.setColor(Color.WHITE);
+			tmpPaint.setTextSize(20);
+			canvas.drawText("Snow Count: " + Integer.toString(SnowPilot.mSnow.size()), 
+					10, 50, tmpPaint);
+		}
+		
 		
 		invalidate();
 		
