@@ -70,11 +70,10 @@ public class Terrain extends Drawable {
 					tmpPeakReset = SnowPilot.mRandom.nextInt(MAX_PEAK_RESET) + 1;
 					upDown = !upDown;
 				} else {
-					if (upDown)
-						tmpRandomWalk += 1;
+					if (upDown) tmpRandomWalk += 1;
 					else tmpRandomWalk -= 1;
 				}
-				_surface[index] = _startingHeight + tmpRandomWalk;
+				_surface[index] = tmpRandomWalk + _startingHeight;
 			} return;
 		}
 	}

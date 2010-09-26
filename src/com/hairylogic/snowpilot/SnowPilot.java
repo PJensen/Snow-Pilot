@@ -67,12 +67,13 @@ public class SnowPilot extends Activity {
     		return false;
     	
     	// TODO: For efficiency save x and y early on.
-    	Point tmpHistorical = new Point();
+    	// Point tmpHistorical = new Point();
     	
     	// Make a quick determination if the touch is above the surface; we 
     	// just pass the whole event.
     	if (!SnowPilot.mTerrain.chkTouchPastSurface(event)) {
     		
+    		/*
     		if (mThrowing) {
     			// Record the newest x and y; and hopefully use
     			// last point to generate a throw vector. 
@@ -82,7 +83,7 @@ public class SnowPilot extends Activity {
     			
     			throwSlope = getSlope(tmpNewPoint, tmpHistorical);
     			mThrowing = false;
-    		}
+    		}*/
     		
     		// Save the current pressure
     		int tmpPressure = (int)(event.getPressure() * 30);
@@ -106,9 +107,9 @@ public class SnowPilot extends Activity {
     				(int)event.getRawY(), tmpPressure));
     	} else {
     		SnowPilot.mTerrain.dropSurface(event);
-    		tmpHistorical.x = (int)event.getRawX();
-    		tmpHistorical.y = (int)event.getRawY();
-    		mThrowing = true;
+    	//	tmpHistorical.x = (int)event.getRawX();
+//    		tmpHistorical.y = (int)event.getRawY();
+  //  		mThrowing = true;
     	}
     	
     	// The motion even call chain stops here.
@@ -126,6 +127,13 @@ public class SnowPilot extends Activity {
     	// 
     	Terrain.isGenerated = false;
     	super.onBackPressed();
+    }
+    
+    @Override
+    public boolean onSearchRequested() {
+    	Terrain.isGenerated = false;
+    	return false;
+    	// return super.onSearchRequested();
     }
     
     /**
@@ -152,7 +160,7 @@ public class SnowPilot extends Activity {
     /**
      * Set to true if the player is about to throw something.
      */
-    public static boolean mThrowing = false;
+    // public static boolean mThrowing = false;
     
     // public static SnowMan mSnowMan; 
     
@@ -168,7 +176,7 @@ public class SnowPilot extends Activity {
      */
     public static Screen mScreen;
     
-    public static float throwSlope = 0.0f;
+    // public static float throwSlope = 0.0f;
     
     /**
      * The main-game thread; does all game logic etc.

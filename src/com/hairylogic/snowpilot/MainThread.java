@@ -14,7 +14,7 @@ public final class MainThread implements Runnable {
 
 	private final int ONE_HUNDRED = 100;
 	private final int SNOW_THRESHOLD = 10;
-	private static final long THREAD_DELAY = 10L;
+	private static final long THREAD_DELAY = 20L;
 	/**
 	 * Implements Runnable
 	 */
@@ -45,6 +45,9 @@ public final class MainThread implements Runnable {
 						tmpNewStyle = TerrainStyle.RANDOM_TERRAIN;
 						break;
 					case 4:
+						tmpNewStyle = TerrainStyle.JAGGED_TERRAIN;
+						break;
+					default:
 						tmpNewStyle = TerrainStyle.JAGGED_TERRAIN;
 						break;
 					}
