@@ -34,6 +34,12 @@ public class SnowPilot extends Activity {
         mTreeBitmap = BitmapFactory.decodeResource(getResources(), 
         		R.drawable.tree);
         
+        mMoonBitmap = BitmapFactory.decodeResource(getResources(), 
+        		R.drawable.lunar);
+        
+        mCloudA = BitmapFactory.decodeResource(getResources(), 
+        		R.drawable.cloud_a);
+        
         // Generate what ends up being the only copy of paint; 
         // additionally call setPaint for *all* snow-flakes.
         Paint tmpSnowPaint = new Paint();
@@ -170,6 +176,10 @@ public class SnowPilot extends Activity {
     public static Terrain mTerrain;
     
     public static Bitmap mTreeBitmap;
+    
+    public static Bitmap mMoonBitmap;
+    
+    public static Bitmap mCloudA;
     
     /**
      * The screen that *everything* is drawn on.

@@ -16,8 +16,14 @@ public class Screen extends View {
 		super(context);
 	}
 
+	public int ix = 0;
 	@Override
 	public void draw(Canvas canvas) {
+		
+		// Snow doesn't fall behind the moon.
+		canvas.drawBitmap(SnowPilot.mMoonBitmap, getWidth()/3, getHeight()/4,  new Paint());
+		
+		// canvas.drawBitmap(SnowPilot.mCloudA, getWidth()/3 + (ix++), getHeight()/4,  new Paint());
 		
 		Iterator<SnowFlake> iSnow = SnowPilot.mSnow.iterator();
 		while (iSnow.hasNext()) {
@@ -34,9 +40,7 @@ public class Screen extends View {
 			canvas.drawText("Snow Count: " + Integer.toString(SnowPilot.mSnow.size()), 
 					10, 50, tmpPaint);
 			// canvas.drawText("Throw:" + Float.toString(SnowPilot.throwSlope), 10, 70, tmpPaint);	
-		}
-		
-		
+		}		
 		
 		invalidate();
 		

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.text.format.Time;
 import android.view.MotionEvent;
 
@@ -20,7 +21,7 @@ import android.view.MotionEvent;
  *
  */
 public class Terrain extends Drawable {
-	
+		
 	/**
 	 * Create a new terrain with the appropriate width.
 	 * @param aStartingHeight - The height the terrain starts at.
@@ -70,8 +71,9 @@ public class Terrain extends Drawable {
 					tmpPeakReset = SnowPilot.mRandom.nextInt(MAX_PEAK_RESET) + 1;
 					upDown = !upDown;
 				} else {
-					if (upDown) tmpRandomWalk += 1;
-					else tmpRandomWalk -= 1;
+					// TODO: Bring in max slope setting here also.
+					if (upDown) tmpRandomWalk += 2;	// Here
+					else tmpRandomWalk -= 2;		// Here
 				}
 				_surface[index] = tmpRandomWalk + _startingHeight;
 			} return;
@@ -86,10 +88,6 @@ public class Terrain extends Drawable {
 	 * @return True is the coordinate is beyond the surface.
 	 * <b>Precondition</b>: aX does not exceed getWidth()
 	 */
-	/* public boolean chkTouchPastSurface(MotionEvent event) {
-		return (event.getRawY() > _surface[(int)event.getRawX()]); 
-	}*/
-	
 	public boolean chkTouchPastSurface(MotionEvent event) {
 		return ((int)event.getRawY() > 
 			_surface[(int)event.getRawX()]);
@@ -113,7 +111,9 @@ public class Terrain extends Drawable {
 	public void dropSurface(MotionEvent event) {
 		if (event.getRawX() < _terrainWidth  && event.getRawX() > 0)
 		if (_surface[(int)event.getRawX()] + 10 < _screenHeight) {
-			_surface[(int)event.getRawX()] += 10; 
+			_surface[(int)event.getRawX()-1] += 10;
+			_surface[(int)event.getRawX()] += 10;
+			_surface[(int)event.getRawX()+1] += 10; 
 		}
 	}
 	
@@ -128,6 +128,11 @@ public class Terrain extends Drawable {
 		 
 		_surface[aFlake.x] -= aFlake.s;
 		_radSurface[aFlake.x] = aFlake.s;
+		
+		
+		
+		
+		// new Vibrator().vibrate(10);
 	}
 
 	/**
@@ -152,16 +157,29 @@ public class Terrain extends Drawable {
 	 * Simple terrain smoothing algorithm.
 	 */
 	public void smoothTerrain() {
+		/**
+		int dx1;
+		int dx2;
+		for (int index = 1; index < _terrainWidth - 1; ++index) {
+			dx1 = _surface[index - 1] - _surface[index + 1];
+			if (Math.abs(dx1) > 1) {
+				if (dx1 < 0)
+				_surface[index] -= 1;
+				if (dx1 > 0)
+					_surface[index] += 1;	
+			}
+		}*/
 		
 		int dX;
 		for (int index = 1; index < _terrainWidth; ++index) {	
 			dX = _surface[index - 1] - _surface[index];
-			if (Math.abs(dX) > 1) {
-				int tmpLR = SnowPilot.mRandom.nextInt(100);
-				if (dX < 0)
+			if (Math.abs(dX) >= 2 ) {
+				if (dX < 0) {
 					_surface[index - 1] += 1;
-				else 
+				}
+				else { 
 					_surface[index - 1] -= 1;
+				}
 			}
 		}
 	}
@@ -243,7 +261,8 @@ public class Terrain extends Drawable {
 	 * Enumerated type that defines a particular terrain style.
 	 * @author dasm80x86
 	 */
-	public enum TerrainStyle { RANDOM_TERRAIN, FLAT_TERRAIN, JAGGED_TERRAIN }
+	public enum TerrainStyle { RANDOM_TERRAIN, FLAT_TERRAIN, 
+		JAGGED_TERRAIN, HYPER_RANDOM }
 
 	@Override
 	public int getOpacity() {
