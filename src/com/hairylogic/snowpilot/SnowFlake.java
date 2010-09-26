@@ -3,6 +3,7 @@ package com.hairylogic.snowpilot;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 
 /**
@@ -24,6 +25,11 @@ public class SnowFlake extends Drawable {
 		this.s = aS;	// Set S
 	}
 	
+	public SnowFlake(Point a, Point b, int aS) {
+		this.x = a.x;
+		this.y = a.y;
+	}
+	
 	/**
 	 * Move the snow flake to T+1 location.
 	 */
@@ -32,7 +38,7 @@ public class SnowFlake extends Drawable {
 		x += SnowPilot.mRandom.nextInt(2);
 		x -= SnowPilot.mRandom.nextInt(2);
 		y += SnowPilot.mRandom.nextInt(2);
-		y+=(s/2);
+		y+=(s/3);
 	}
 	
 	/**

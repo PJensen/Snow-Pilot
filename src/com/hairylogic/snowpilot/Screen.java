@@ -33,8 +33,9 @@ public class Screen extends View {
 			tmpPaint.setTextSize(20);
 			canvas.drawText("Snow Count: " + Integer.toString(SnowPilot.mSnow.size()), 
 					10, 50, tmpPaint);
-			canvas.drawText("Throw:" + Float.toString(SnowPilot.throwSlope), 10, 70, tmpPaint);
+			canvas.drawText("Throw:" + Float.toString(SnowPilot.throwSlope), 10, 70, tmpPaint);	
 		}
+		
 		
 		
 		invalidate();

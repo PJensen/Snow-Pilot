@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
+import android.text.format.Time;
 import android.view.MotionEvent;
 
 /**
@@ -43,22 +44,23 @@ public class Terrain extends Drawable {
 	 * Generate the terrain.
 	 * Should really only be called once; unless of course the screen is resized.
 	 */
-	public void generate(TerrainStyle aTerrainStyle) {		
+	public void generate(TerrainStyle aTerrainStyle) {	
+		        
 		isGenerated = true; int tmpRandomWalk = 0;
 		
 		initRadSurface(RAD_SURFACE_INIT);
-		
+		SnowPilot.randomizeTimer();		
 		switch (aTerrainStyle) {
 		
 		case FLAT_TERRAIN:
 			for (int index = 0; index < _terrainWidth; ++index) {
-				_surface[index] = _startingHeight + 100;
+				_surface[index] = _startingHeight;
 			} return;
 		case RANDOM_TERRAIN:
 			for (int index = 0; index < _terrainWidth; ++index) {
 				tmpRandomWalk += SnowPilot.mRandom.nextInt(2);
 				tmpRandomWalk -= SnowPilot.mRandom.nextInt(2);
-				_surface[index] = tmpRandomWalk + 100;
+				_surface[index] = tmpRandomWalk + _startingHeight;
 			} return;
 		case JAGGED_TERRAIN:
 			boolean upDown = true;
@@ -91,7 +93,7 @@ public class Terrain extends Drawable {
 	
 	public boolean chkTouchPastSurface(MotionEvent event) {
 		return ((int)event.getRawY() > 
-			_surface[(int)event.getRawX()] + _startingHeight);
+			_surface[(int)event.getRawX()]);
 	}
 	
 	/**
@@ -101,7 +103,7 @@ public class Terrain extends Drawable {
 	 */
 	public boolean chkImpact(SnowFlake aFlake) {
 		if (aFlake.x > _terrainWidth) return false;
-		try { return (aFlake.y > _startingHeight + _surface[aFlake.x]); }
+		try { return (aFlake.y > _surface[aFlake.x]); }
 		catch(Exception ex) { return false; } 
 	}
 	
@@ -110,7 +112,7 @@ public class Terrain extends Drawable {
 	 * @param event
 	 */
 	public void dropSurface(MotionEvent event) {
-		if (event.getRawX() < _terrainWidth)
+		if (event.getRawX() < _terrainWidth  && event.getRawX() > 0)
 		if (_surface[(int)event.getRawX()] + 10 < _screenHeight) {
 			_surface[(int)event.getRawX()] += 10; 
 		}
@@ -125,7 +127,7 @@ public class Terrain extends Drawable {
 	 */
 	public void snowImpact(SnowFlake aFlake) {
 		 
-		_surface[aFlake.x] -= 2;
+		_surface[aFlake.x] -= aFlake.s;
 		_radSurface[aFlake.x] = aFlake.s;
 	}
 
@@ -139,6 +141,15 @@ public class Terrain extends Drawable {
 	}
 	
 	/**
+	 * The height at a particular x-coordinate
+	 * @param x - The x-coordinate to check up on.
+	 * @return - The height there.
+	 */
+	public int getHeightAt(int x) {
+		return _surface[x];
+	}
+	
+	/**
 	 * Simple terrain smoothing algorithm.
 	 */
 	public void smoothTerrain() {
@@ -147,6 +158,7 @@ public class Terrain extends Drawable {
 		for (int index = 1; index < _terrainWidth; ++index) {	
 			dX = _surface[index - 1] - _surface[index];
 			if (Math.abs(dX) > 1) {
+				int tmpLR = SnowPilot.mRandom.nextInt(100);
 				if (dX < 0)
 					_surface[index - 1] += 1;
 				else 
@@ -168,12 +180,17 @@ public class Terrain extends Drawable {
 	@Override
 	public void draw(Canvas canvas) {
 		for (int index = 0; index < _terrainWidth; ++index) {
+			
+			
 			// _terrainPaint.setColor(Color.WHITE);
 			// canvas.drawCircle(index, _startingHeight + _surface[index], _radSurface[index], _terrainPaint);
 						
-			_terrainPaint.setStrokeCap(Cap.ROUND);
+			// _terrainPaint.setStrokeCap(Cap.ROUND);
 			// _terrainPaint.setStrokeWidth(_radSurface[index]);
-			canvas.drawLine(index, _startingHeight + _surface[index], index, _screenHeight, _terrainPaint);
+			canvas.drawLine(index, _surface[index], index, _screenHeight, _terrainPaint);
+			
+			canvas.drawBitmap(SnowPilot.mTreeBitmap, (_terrainWidth  / 3) - (SnowPilot.mTreeBitmap.getWidth()/2), 
+					(_surface[_terrainWidth  / 3] - SnowPilot.mTreeBitmap.getHeight()) + 10,_terrainPaint);  
 		}
 	}
 	

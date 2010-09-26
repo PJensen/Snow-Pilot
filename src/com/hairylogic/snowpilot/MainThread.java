@@ -26,9 +26,12 @@ public final class MainThread implements Runnable {
 			while (SnowPilot.mScreen == null)
 				;
 			
+			// Generate the terrain if it needs generating. 
 			if (!Terrain.isGenerated) {
-				if (SnowPilot.mScreen.getWidth() > 0) {
-					SnowPilot.mTerrain = new Terrain((SnowPilot.mScreen.getHeight()/2), 
+				if (SnowPilot.mScreen.getWidth() > 0 &&
+						SnowPilot.mScreen.getHeight() > 0) {
+					SnowPilot.mTerrain = new Terrain(
+							SnowPilot.mScreen.getHeight() - (SnowPilot.mScreen.getHeight()/8), 
 							SnowPilot.mScreen);
 					TerrainStyle tmpNewStyle = null;
 					switch(SnowPilot.mRandom.nextInt(3) + 1) {
@@ -50,24 +53,15 @@ public final class MainThread implements Runnable {
 				}
 			} else { SnowPilot.mTerrain.smoothTerrain(); } 
 			
-			
-			
-			/*
-			if (mTerrtain == null)
-				mTerrtain = new Terrain(400, SnowPilot.mScreen.getWidth(), SnowPilot.mScreen.getHeight());
-			else if (!mTerrtain.isGenerated) {
-				mTerrtain = new Terrain(SnowPilot.mScreen.getWidth() + SnowPilot.mScreen.getWidth()/4, SnowPilot.mScreen.getWidth(), SnowPilot.mScreen.getHeight());
-				mTerrtain.generate(TerrainStyle.JAGGED_TERRAIN);
-			}*/
-			
 			// If a random number between one and one-hundred is less than
 			// the snow threshold make snow this time around.
-			 if (SnowPilot.mRandom.nextInt(ONE_HUNDRED) < SNOW_THRESHOLD) {
+			if (SnowPilot.mRandom.nextInt(ONE_HUNDRED) < SNOW_THRESHOLD) {
 				 int tmpRandomX = SnowPilot.mRandom.nextInt(SnowPilot.mScreen.getWidth());
 				 int tmpRandomS = SnowPilot.mRandom.nextInt(10);
 				 SnowPilot.mSnow.add(new SnowFlake(tmpRandomX, 1, tmpRandomS));	
 			}
-			
+
+			// Check for snow impacts, perform snow impact and invalidate.
 			Iterator<SnowFlake> iSnow = SnowPilot.mSnow.iterator();
 			while (iSnow.hasNext()) {
 				SnowFlake tmpFlake = iSnow.next();
@@ -79,6 +73,7 @@ public final class MainThread implements Runnable {
 				}
 			}
 			
+			// Remove invalidated snow-flakes.
 			iSnow = SnowPilot.mSnow.iterator();
 			while (iSnow.hasNext())	{
 				SnowFlake tmpFlake = iSnow.next();
@@ -86,6 +81,7 @@ public final class MainThread implements Runnable {
 					SnowPilot.mSnow.remove(tmpFlake);
 			}
 
+			// Delay a predefined amount.
 			try { Thread.sleep(THREAD_DELAY); } 
 			catch (InterruptedException e) {  }
 		}

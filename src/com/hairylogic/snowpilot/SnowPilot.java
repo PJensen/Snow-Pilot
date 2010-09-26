@@ -5,6 +5,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -23,6 +25,14 @@ public class SnowPilot extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Load up the snowman Bitmap.
+        SnowMan.setBitmap(BitmapFactory.decodeResource(getResources(), 
+        		R.drawable.snow_man));
+        
+        // Hug a tree save the earth.
+        mTreeBitmap = BitmapFactory.decodeResource(getResources(), 
+        		R.drawable.tree);
         
         // Generate what ends up being the only copy of paint; 
         // additionally call setPaint for *all* snow-flakes.
@@ -38,7 +48,7 @@ public class SnowPilot extends Activity {
         
         // Set the random seed based upon the number of milliseconds
         // since UNIX epoch.
-        mRandom.setSeed(new Time().toMillis(true));
+        randomizeTimer();
                         
         // Fire the main thread.
         if (!mThread.isAlive())
@@ -75,7 +85,7 @@ public class SnowPilot extends Activity {
     		}
     		
     		// Save the current pressure
-    		int tmpPressure = (int)(event.getPressure() * 50);
+    		int tmpPressure = (int)(event.getPressure() * 30);
 
     		// Based upon pressure, generate another flake.
     		tmpPressure += mRandom.nextInt(tmpPressure);
@@ -128,15 +138,30 @@ public class SnowPilot extends Activity {
     	return (b.y - a.y) / (b.x - a.x); 
     }
     
+    public static void randomizeTimer() {
+    	
+    	// Grab a time object, set it to the current time.
+		Time tmpTime = new Time();
+		tmpTime.setToNow();
+		
+        // Set the random seed based upon the number of milliseconds
+        // since UNIX epoch.
+        SnowPilot.mRandom.setSeed(tmpTime.toMillis(false));
+    }
+    
     /**
      * Set to true if the player is about to throw something.
      */
     public static boolean mThrowing = false;
     
+    // public static SnowMan mSnowMan; 
+    
     /**
      * The terrain onto which the snow falls and accumulates.
      */
     public static Terrain mTerrain;
+    
+    public static Bitmap mTreeBitmap;
     
     /**
      * The screen that *everything* is drawn on.
