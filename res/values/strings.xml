@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, SnowPilot!</string>
     <string name="app_name">SnowPilot</string>
+
 </resources>

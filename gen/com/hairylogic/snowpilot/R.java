@@ -14,11 +14,20 @@ public final class R {
         public static final int cloud_a=0x7f020000;
         public static final int icon=0x7f020001;
         public static final int lunar=0x7f020002;
-        public static final int snow_man=0x7f020003;
-        public static final int tree=0x7f020004;
+        public static final int moon_menu_icon=0x7f020003;
+        public static final int snow_man=0x7f020004;
+        public static final int terrain_steep=0x7f020005;
+        public static final int tree=0x7f020006;
+    }
+    public static final class id {
+        public static final int item01=0x7f060000;
+        public static final int item02=0x7f060001;
     }
     public static final class layout {
         public static final int main=0x7f030000;
+    }
+    public static final class menu {
+        public static final int main_menu=0x7f050000;
     }
     public static final class string {
         public static final int app_name=0x7f040001;

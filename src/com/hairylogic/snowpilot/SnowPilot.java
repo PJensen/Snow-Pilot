@@ -14,6 +14,9 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -72,25 +75,10 @@ public class SnowPilot extends Activity {
     	else if (event.getRawX() < 0)
     		return false;
     	
-    	// TODO: For efficiency save x and y early on.
-    	// Point tmpHistorical = new Point();
-    	
     	// Make a quick determination if the touch is above the surface; we 
     	// just pass the whole event.
     	if (!SnowPilot.mTerrain.chkTouchPastSurface(event)) {
-    		
-    		/*
-    		if (mThrowing) {
-    			// Record the newest x and y; and hopefully use
-    			// last point to generate a throw vector. 
-    			Point tmpNewPoint = new Point();
-    			tmpNewPoint.x = (int) event.getRawX();
-    			tmpNewPoint.y = (int) event.getRawY();
-    			
-    			throwSlope = getSlope(tmpNewPoint, tmpHistorical);
-    			mThrowing = false;
-    		}*/
-    		
+    		    		
     		// Save the current pressure
     		int tmpPressure = (int)(event.getPressure() * 30);
 
@@ -111,12 +99,8 @@ public class SnowPilot extends Activity {
     		tmpPressure -= mRandom.nextInt(tmpPressure);
     		mSnow.add(new SnowFlake((int)event.getRawX(), 
     				(int)event.getRawY(), tmpPressure));
-    	} else {
-    		SnowPilot.mTerrain.dropSurface(event);
-    	//	tmpHistorical.x = (int)event.getRawX();
-//    		tmpHistorical.y = (int)event.getRawY();
-  //  		mThrowing = true;
-    	}
+    		
+    	} else { SnowPilot.mTerrain.dropSurface(event); }
     	
     	// The motion even call chain stops here.
     	return false;  // super.onTouchEvent(event); 
@@ -141,6 +125,29 @@ public class SnowPilot extends Activity {
     	return false;
     	// return super.onSearchRequested();
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    	
+    	case R.id.item01:
+    		Terrain.isGenerated = false;
+    		return true;
+    	case R.id.item02:
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+    
+    
     
     /**
      * Return the slope between two points.

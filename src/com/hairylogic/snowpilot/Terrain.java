@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
 import android.text.format.Time;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 /**
  * Terrain
@@ -32,7 +33,6 @@ public class Terrain extends Drawable {
 		_terrainWidth = aScreen.getWidth();
 		_screenHeight = aScreen.getHeight();
 		_surface = new int[_terrainWidth];
-		_radSurface = new int[_terrainWidth];
 		
 		_terrainPaint = new Paint();
 		_terrainPaint.setStrokeCap(Cap.ROUND);
@@ -48,8 +48,7 @@ public class Terrain extends Drawable {
 	public void generate(TerrainStyle aTerrainStyle) {	
 		        
 		isGenerated = true; int tmpRandomWalk = 0;
-		
-		initRadSurface(RAD_SURFACE_INIT);
+	
 		SnowPilot.randomizeTimer();		
 		switch (aTerrainStyle) {
 		
@@ -127,21 +126,6 @@ public class Terrain extends Drawable {
 	public void snowImpact(SnowFlake aFlake) {
 		 
 		_surface[aFlake.x] -= aFlake.s;
-		_radSurface[aFlake.x] = aFlake.s;
-		
-		
-		
-		
-		// new Vibrator().vibrate(10);
-	}
-
-	/**
-	 * Initialize each element of the radial surface.
-	 */
-	private void initRadSurface(int aVal) {
-		for(int index =0; index < _terrainWidth; ++index) {
-			_radSurface[index] = aVal;
-		}
 	}
 	
 	/**
@@ -152,34 +136,21 @@ public class Terrain extends Drawable {
 	public int getHeightAt(int x) {
 		return _surface[x];
 	}
-	
+	 
 	/**
 	 * Simple terrain smoothing algorithm.
 	 */
 	public void smoothTerrain() {
-		/**
-		int dx1;
-		int dx2;
-		for (int index = 1; index < _terrainWidth - 1; ++index) {
-			dx1 = _surface[index - 1] - _surface[index + 1];
-			if (Math.abs(dx1) > 1) {
-				if (dx1 < 0)
-				_surface[index] -= 1;
-				if (dx1 > 0)
-					_surface[index] += 1;	
-			}
-		}*/
-		
-		int dX;
-		for (int index = 1; index < _terrainWidth; ++index) {	
-			dX = _surface[index - 1] - _surface[index];
-			if (Math.abs(dX) >= 2 ) {
-				if (dX < 0) {
-					_surface[index - 1] += 1;
-				}
-				else { 
-					_surface[index - 1] -= 1;
-				}
+		final int MAX_SLOPE = 2;
+		int deltaY, lhs, rhs;	// (signed) y-Delta, RHS, LHS
+		for (int index = 1; index < _terrainWidth; ++index) {
+			lhs = _surface[index - 1]; rhs = _surface[index];
+			deltaY = (lhs - rhs);
+			if (Math.abs(deltaY) > MAX_SLOPE) {	// Unsigned slope check
+				if (deltaY < 0)
+					_surface[index -1] +=1 ;
+				else 
+					_surface[index -1] -=1 ;
 			}
 		}
 	}
@@ -198,14 +169,12 @@ public class Terrain extends Drawable {
 	public void draw(Canvas canvas) {
 		for (int index = 0; index < _terrainWidth; ++index) {
 			
-			
+			// TODO: Fix the color issue.
 			// _terrainPaint.setColor(Color.WHITE);
-			// canvas.drawCircle(index, _startingHeight + _surface[index], _radSurface[index], _terrainPaint);
-						
 			// _terrainPaint.setStrokeCap(Cap.ROUND);
-			// _terrainPaint.setStrokeWidth(_radSurface[index]);
 			canvas.drawLine(index, _surface[index], index, _screenHeight, _terrainPaint);
 			
+			// TODO: Tree should be it's own object drawn elsewhere.
 			canvas.drawBitmap(SnowPilot.mTreeBitmap, (_terrainWidth  / 3) - (SnowPilot.mTreeBitmap.getWidth()/2), 
 					(_surface[_terrainWidth  / 3] - SnowPilot.mTreeBitmap.getHeight()) + 10,_terrainPaint);  
 		}
@@ -239,23 +208,10 @@ public class Terrain extends Drawable {
 	private int[] _surface = null;
 	
 	/**
-	 * Array containing all radius of each snow particle on the surface.
-	 * _radSurface[a] = 0 implies a circle with radius zero.
-	 * _radSurfce[a] = 20 implies a circle with radius 20.
-	 * Note: Snow actually hits _surface[x] + _radSurface[x]
-	 */
-	private int[] _radSurface = null;
-	
-	/**
 	 * The maximum distance (across) a single peek can rise or fall. 
 	 * Affects terrain generation when type is JAGGED_TERRAIN (ONLY).
 	 */
 	static final int MAX_PEAK_RESET = 50;
-	
-	/**
-	 * Radii start out at this value.
-	 */
-	static final int RAD_SURFACE_INIT = 5;
 	
 	/**
 	 * Enumerated type that defines a particular terrain style.

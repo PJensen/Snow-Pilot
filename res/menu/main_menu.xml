@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/item01" android:visible="true" android:enabled="true" android:checked="false" android:checkable="false" android:title="Regenerate" android:menuCategory="container" android:titleCondensed="Regen" android:icon="@drawable/terrain_steep"></item>
+<item android:id="@+id/item02" android:title="Moon" android:menuCategory="container" android:titleCondensed="Moon" android:visible="true" android:enabled="true" android:checked="true" android:checkable="true" android:icon="@drawable/moon_menu_icon"></item>
+</menu>

@@ -54,7 +54,8 @@ public final class MainThread implements Runnable {
 					SnowPilot.mTerrain.generate(tmpNewStyle);
 					Terrain.isGenerated = true;
 				}
-			} else { SnowPilot.mTerrain.smoothTerrain(); } 
+			} else { SnowPilot.mTerrain.smoothTerrain(); 
+				SnowPilot.mTerrain.smoothTerrain();} 
 			
 			// If a random number between one and one-hundred is less than
 			// the snow threshold make snow this time around.
