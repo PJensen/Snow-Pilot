@@ -58,10 +58,16 @@ public class SnowPilot extends Activity {
         // Set the random seed based upon the number of milliseconds
         // since UNIX epoch.
         randomizeTimer();
-                        
+        
         // Fire the main thread.
         if (!mThread.isAlive())
         	mThread.start();
+    }
+    
+    @Override
+    protected void onStart() {
+    	mTerrain = new Terrain(mScreen.getHeight()/2, mScreen);
+    	super.onStart();
     }
     
     /**
@@ -69,6 +75,9 @@ public class SnowPilot extends Activity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+    	
+    	if (SnowPilot.mTerrain == null)
+    		return false;
     	
     	if (event.getRawX() > mScreen.getWidth())
     		return false;
